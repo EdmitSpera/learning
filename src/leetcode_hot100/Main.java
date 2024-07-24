@@ -6,58 +6,51 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        System.out.println(main.addStrings("123", "456"));  // 输出 "579"
-        System.out.println(main.addStrings("999", "1"));    // 输出 "1000"
+        int[] height = {1,8,6,2,5,4,8,3,7};
+
     }
 
-    public String addStrings(String num1, String num2) {
-        StringBuilder result = new StringBuilder();
-        int carry = 0;
+    public String minWindow(String s, String t) {
+        if (s == null || s.isEmpty() || t == null || t.isEmpty() || s.length() < t.length()) return "";
 
-        int i = num1.length() - 1;
-        int j = num2.length() - 1;
+        Map<Character, Integer> need = new HashMap<>();
+        Map<Character, Integer> window = new HashMap<>();
 
-        while (i >= 0 || j >= 0 || carry != 0) {
-            int n1 = i >= 0 ? num1.charAt(i) - '0' : 0;
-            int n2 = j >= 0 ? num2.charAt(j) - '0' : 0;
+        // 初始化 need，记录 t 中每个字符的出现次数
+        for (char c : t.toCharArray()) need.put(c, need.getOrDefault(c, 0) + 1);
 
-            int sum = n1 + n2 + carry;
-            carry = sum / 10;
-            result.append(sum % 10);
+        int left = 0, right = 0; // 窗口的左右边界
+        int valid = 0; // 已经匹配上的字符数量
+        int start = 0, minLen = Integer.MAX_VALUE; // 最小窗口的起始位置和长度
 
-            i--;
-            j--;
-        }
+        while (right < s.length()) {
+            char r = s.charAt(right);
+            right++;
 
-        return result.reverse().toString();
-    }
-
-
-
-    public ListNode reverseList(ListNode node){
-        ListNode pre = null;
-        ListNode cur = node;
-        ListNode next;
-
-        while(cur != null){
-            next = cur.next;
-
-            cur.next = pre;
-            pre = cur;
-            cur = next;
-        }
-        return pre;
-    }
-
-    public boolean checkBounding(ListNode node,int k){
-        for(int i = 0; i < k; i++){
-            if(node == null){
-                return false;
+            // 更新窗口内字符的计数
+            if (need.containsKey(r)) {
+                window.put(r, window.getOrDefault(r, 0) + 1);
+                if (window.get(r).equals(need.get(r))) valid++;
             }
-            node = node.next;
-        }
 
-        return true;
+            // 当窗口内的字符已经完全包含了 t 中的所有字符时
+            while (valid == need.size()) {
+                // 更新最小窗口的起始位置和长度
+                if (right - left < minLen) {
+                    start = left;
+                    minLen = right - left;
+                }
+
+                char l = s.charAt(left);
+                // 缩小窗口，移动左边界
+                if (need.containsKey(l)) {
+                    window.put(l, window.get(l) - 1);
+                    if (window.get(l) < need.get(l)) valid--;
+                }
+                left++;
+            }
+        }
+        return minLen == Integer.MAX_VALUE ? "" : s.substring(start, start + minLen);
     }
 
 
