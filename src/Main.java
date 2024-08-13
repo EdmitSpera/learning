@@ -24,6 +24,61 @@ public class Main {
         }
     }
 
+    public static void main(String[] args) {
+        Main main = new Main();
+        int[] nums = {3,2,4,2};
+        int[] weight1 = getWeight(nums);
+        System.out.println();
+    }
+
+
+    public static int[] getWeight(int[] arr){
+        // 计算最大最小值
+        int max = findMax(arr);
+        int min = findMin(arr);
+        int sum = getSum(arr);
+        int[] res = new int[arr.length];
+        // 计算权值
+        for(int i = 0; i < arr.length; i++){
+            int doubleNum = arr[i] * 2;
+            int temp = sum - arr[i];
+            temp += doubleNum;
+            int weight = (max - min) * temp;
+            res[i] = weight;
+        }
+
+        return res;
+    }
+
+    public static int findMax(int[] arr){
+        int max = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if(arr[i] > max){
+                max = arr[i];
+            }
+        }
+        return max;
+    }
+
+    public static int findMin(int[] arr){
+        int min = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if(arr[i] < min){
+                min = arr[i];
+            }
+        }
+        return min;
+    }
+
+    public static int getSum(int[] arr){
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            sum += arr[i];
+        }
+        return sum;
+    }
+
+
     public static void levelOrder(TreeNode root) {
         ArrayDeque<TreeNode> queue = new ArrayDeque<>();
         ArrayDeque<TreeNode> levelQueue = new ArrayDeque<>();
@@ -48,11 +103,6 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
-        Main main = new Main();
-        int[] nums = {1,3,-1,-3,5,3,6,7};
-        main.maxSlidingWindow(nums, 3);
-    }
 
     public int[] maxSlidingWindow(int[] nums, int k) {
         // 特殊情况
